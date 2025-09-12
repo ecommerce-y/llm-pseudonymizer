@@ -174,20 +174,7 @@ llm-pseudonymizer/
 │   └── merge.py              # Conflict resolution
 ├── providers/
 │   └── openai_client.py      # OpenAI API integration
-├── dev_docs/                 # Detailed specifications
-└── tests/                    # Unit tests
-```
-
-### Running Tests
-
-```bash
-# Test individual modules
-python3 -m pytest test_aliases.py -v
-python3 -m pytest test_spacy_ner.py -v
-python3 -m pytest test_merge.py -v
-
-# Test all modules
-python3 -m pytest -v
+└── dev_docs/                 # Detailed specifications
 ```
 
 ### Development Order
@@ -253,27 +240,3 @@ python3 cli.py --config config.yaml --echo-sanitized
 # Test without sending to LLM
 python3 cli.py --config config.yaml --no-send
 ```
-
-## Contributing
-
-1. Read the specifications in `dev_docs/`
-2. Follow the development order
-3. Add tests for new functionality
-4. Update relevant specification files
-5. Ensure all tests pass
-
-## License
-
-[Add your license here]
-
-## Documentation
-
-Detailed technical specifications are available in the `dev_docs/` directory:
-
-- [`system_specifications.md`](dev_docs/system_specifications.md) - Overall system architecture
-- [`implementation_plan.md`](dev_docs/implementation_plan.md) - Development roadmap
-- [`config_specifications.md`](dev_docs/config_specifications.md) - Configuration system
-- [`aliases_specifications.md`](dev_docs/aliases_specifications.md) - Entity mapping
-- [`rules_specifications.md`](dev_docs/rules_specifications.md) - Regex detection
-- [`spacy_ner_specifications.md`](dev_docs/spacy_ner_specifications.md) - NER detection
-- [`merge_specifications.md`](dev_docs/merge_specifications.md) - Conflict resolution
