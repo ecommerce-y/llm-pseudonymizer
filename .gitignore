@@ -2,6 +2,11 @@
 __pycache__/
 **/__pycache__/
 
+# Ignore environment files (contains API keys)
+.env
+.env.local
+.env.*.local
+
 # Ignore all Markdown files except any README.md
 *.md
 !README.md
