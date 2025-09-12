@@ -6,3 +6,6 @@ __pycache__/
 *.md
 !README.md
 !**/README.md
+
+# Ignore developer docs
+/dev_docs
