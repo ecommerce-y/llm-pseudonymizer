@@ -1,0 +1,36 @@
+# LLM Pseudonymizer Configuration File
+# 
+# This file controls which entities are detected and how the system behaves.
+# Copy this file and modify as needed for your use case.
+
+detection:
+  # Entity types to detect and replace
+  entities:
+    PERSON: true      # Names of people (requires spaCy)
+    ORG: true         # Organization names (requires spaCy)
+    EMAIL: true       # Email addresses (regex-based)
+    URL: true         # URLs and domains (regex-based)
+  
+  # Detection methods to use
+  methods:
+    regex: true       # Fast, deterministic pattern matching
+    spacy: true       # ML-based named entity recognition
+
+# LLM Provider configuration
+provider:
+  default: "openai"   # Default provider to use
+  
+  # OpenAI-specific settings
+  openai:
+    model: "gpt-3.5-turbo"    # Model to use (gpt-3.5-turbo, gpt-4, etc.)
+    temperature: 0.7          # Response creativity (0.0-2.0)
+    max_tokens: null          # Max response length (null = model default)
+    timeout: 30               # Request timeout in seconds
+    max_retries: 3            # Number of retries for failed requests
+    retry_delay: 1.0          # Initial retry delay in seconds
+    retry_backoff: 2.0        # Backoff multiplier for retries
+
+# Example usage:
+# python3 cli.py --config config.yaml
+#
+# Make sure to set your OPENAI_API_KEY in the .env file first!
