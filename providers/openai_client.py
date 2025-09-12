@@ -327,17 +327,19 @@ class OpenAIProvider:
         warnings = []
         
         # Pattern for valid placeholders
-        placeholder_pattern = re.compile(r'\b(?:PERSON|ORG|EMAIL|URL)_[1-9]\d*\b')
+        valid_pattern = re.compile(r'\b(?:PERSON|ORG|EMAIL|URL)_[1-9]\d*\b')
         
-        # Pattern for potentially corrupted placeholders
-        corrupted_pattern = re.compile(r'\b(?:PERSON|ORG|EMAIL|URL)[_\s]?\d*\b', re.IGNORECASE)
+        # Pattern for potentially corrupted placeholders (case-insensitive variations)
+        corrupted_pattern = re.compile(r'\b(?:person|org|email|url)_[1-9]\d*\b', re.IGNORECASE)
         
-        # Find all placeholder-like strings
-        potential_placeholders = corrupted_pattern.findall(response_text)
-        valid_placeholders = placeholder_pattern.findall(response_text)
+        # Find valid placeholders
+        valid_placeholders = set(valid_pattern.findall(response_text))
         
-        # Check for corrupted placeholders
-        for match in potential_placeholders:
+        # Find potentially corrupted placeholders
+        corrupted_matches = corrupted_pattern.findall(response_text)
+        
+        # Check for corrupted placeholders (not in valid set and not properly formatted)
+        for match in corrupted_matches:
             if match not in valid_placeholders and match.upper() != match:
                 warnings.append(f"Potentially corrupted placeholder: {match}")
         
