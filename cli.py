@@ -14,6 +14,14 @@ import sys
 import traceback
 from typing import Dict, List, Any, Optional
 
+# Load environment variables from .env file
+try:
+    from dotenv import load_dotenv
+    load_dotenv()  # Load .env file if available
+except ImportError:
+    # dotenv not installed, continue with system environment variables
+    pass
+
 
 class Session:
     """Maintains session state across multiple prompts."""

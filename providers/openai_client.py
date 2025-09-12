@@ -12,6 +12,14 @@ import re
 from typing import Optional, Dict, Any, List
 from unittest.mock import Mock
 
+# Load environment variables from .env file
+try:
+    from dotenv import load_dotenv
+    load_dotenv()  # Load .env file if available
+except ImportError:
+    # dotenv not installed, continue with system environment variables
+    pass
+
 
 class OpenAIProvider:
     """
