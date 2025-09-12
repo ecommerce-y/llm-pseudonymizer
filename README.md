@@ -4,13 +4,11 @@ A local system that pseudonymizes sensitive information before sending text to e
 
 ## Overview
 
-The LLM Pseudonymizer protects your privacy when using external LLM services by:
+The LLM Pseudonymizer partially protects privacy when using external LLM services by:
 1. **Detecting** sensitive entities (emails, URLs, names, organizations) in your text
 2. **Replacing** them with opaque placeholders (e.g., `EMAIL_1`, `PERSON_2`)
 3. **Sending** the sanitized text to the LLM
 4. **Restoring** the original entities in the response
-
-All sensitive data stays on your machine - only placeholders are sent to external services.
 
 ## Features
 
@@ -30,7 +28,7 @@ git clone https://github.com/your-username/llm-pseudonymizer.git
 cd llm-pseudonymizer
 
 # Install dependencies
-pip install spacy pyyaml openai
+pip install -r requirements.txt
 
 # Download spaCy English model
 python3 -m spacy download en_core_web_sm
@@ -38,13 +36,34 @@ python3 -m spacy download en_core_web_sm
 
 ### Configuration
 
-Create a `config.yaml` file:
+#### 1. Set up your API key
+
+Create a `.env` file in the project root:
+
+```bash
+# Copy the template
+cp .env .env
+
+# Edit the file and replace the placeholder with your actual API key
+# Get your API key from: https://platform.openai.com/api-keys
+```
+
+Your `.env` file should look like:
+```
+OPENAI_API_KEY=sk-your-actual-api-key-here
+```
+
+**Important**: Never commit your `.env` file to version control! It's already in `.gitignore`.
+
+#### 2. Configure detection settings
+
+The `config.yaml` file is already provided with sensible defaults:
 
 ```yaml
 detection:
   entities:
     PERSON: true      # Detect person names
-    ORG: true         # Detect organizations  
+    ORG: true         # Detect organizations
     EMAIL: true       # Detect email addresses
     URL: true         # Detect URLs and domains
   methods:
@@ -58,23 +77,19 @@ provider:
     timeout: 30
     temperature: 0.7
     max_retries: 3
-
-session:
-  echo_sanitized: false
-  strict_mode: false
 ```
 
 ### Usage
 
 ```bash
-# Set your OpenAI API key
-export OPENAI_API_KEY="your-api-key-here"
-
-# Run the pseudonymizer
+# Run the pseudonymizer (API key loaded automatically from .env)
 python3 cli.py --config config.yaml
 
 # Test without sending to LLM
 python3 cli.py --config config.yaml --no-send --echo-sanitized
+
+# Use a different model
+python3 cli.py --config config.yaml --model gpt-4
 ```
 
 ### Example Session
@@ -223,7 +238,14 @@ python3 -m spacy download en_core_web_sm
 
 **Missing API key:**
 ```bash
+# Option 1: Create/update .env file (recommended)
+echo "OPENAI_API_KEY=your-key-here" > .env
+
+# Option 2: Set environment variable
 export OPENAI_API_KEY="your-key-here"
+
+# Option 3: Pass via command line
+python3 cli.py --config config.yaml --api-key your-key-here
 ```
 
 **Configuration errors:**
