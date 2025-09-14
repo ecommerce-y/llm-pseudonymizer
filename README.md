@@ -79,29 +79,70 @@ provider:
     max_retries: 3
 ```
 
-### Usage
+### Basic Usage
 
 ```bash
-# Run the pseudonymizer (API key loaded automatically from .env)
+# Interactive mode - process prompts in a conversation
 python3 cli.py --config config.yaml
 
-# Test without sending to LLM
-python3 cli.py --config config.yaml --no-send --echo-sanitized
+# Test mode - see what's sent to LLM and the response at each stage
+python3 cli.py --config config.yaml --test
 
-# Use a different model
-python3 cli.py --config config.yaml --model gpt-4
+# Process without sending to LLM (sanitization only)
+python3 cli.py --config config.yaml --no-send
+
+# Show sanitized text and redaction report
+python3 cli.py --config config.yaml --echo-sanitized
 ```
 
 ### Example Session
 
 ```
-Enter prompt: Hi, I'm John Doe from john.doe@company.com. Visit https://company.com for more info.
+$ python3 cli.py --config config.yaml
+LLM Pseudonymizer - Interactive Mode
+Type 'quit' or 'exit' to end session
+Type 'help' for available commands
+--------------------------------------------------
 
-Sanitized: Hi, I'm PERSON_1 from EMAIL_1. Visit URL_1 for more info.
+> Hi, I'm John Doe from john.doe@company.com. Visit https://company.com for more info.
 
-Response: Hello PERSON_1! I'd be happy to help. I'll check out URL_1 and can reach you at EMAIL_1 if needed.
+Hello John Doe! I'd be happy to help. I'll check out https://company.com and can reach you at john.doe@company.com if needed.
 
-Final: Hello John Doe! I'd be happy to help. I'll check out https://company.com and can reach you at john.doe@company.com if needed.
+> help
+Available commands:
+  help    - Show this help message
+  stats   - Show session statistics
+  clear   - Clear session mappings
+  quit    - Exit the program
+  exit    - Exit the program
+
+Or enter any text to process through the pipeline.
+
+> quit
+Session ended.
+```
+
+### Test Mode Example
+
+```bash
+$ python3 cli.py --config config.yaml --test
+
+> Contact John Doe at john@example.com
+
+==================================================
+SENT TO LLM:
+==================================================
+Contact PERSON_1 at EMAIL_1
+
+==================================================
+LLM RESPONSE:
+==================================================
+I'll help you contact PERSON_1 at EMAIL_1.
+
+==================================================
+FINAL OUTPUT:
+==================================================
+I'll help you contact John Doe at john@example.com
 ```
 
 ## Architecture
@@ -160,18 +201,64 @@ provider:
 
 ## Command Line Options
 
-```bash
-python3 cli.py --config config.yaml [OPTIONS]
+### Required Arguments
+- `--config PATH` - Path to configuration file (YAML format)
 
-Options:
-  --config PATH          Path to configuration file (required)
-  --no-send             Process without sending to LLM
-  --echo-sanitized      Display sanitized text and redaction report
-  --provider PROVIDER   Override default provider
-  --model MODEL         Override default model
-  --timeout SECONDS     Override request timeout
-  --strict              Fail on pre-send leak detection
+### Operational Modes
+- `--no-send` - Process text without sending to LLM (sanitization only)
+- `--echo-sanitized` - Display sanitized text and redaction report
+- `--test` - Show sanitized, LLM response, and final output
+- `--rehydrate TEXT` - Test rehydration on provided text with placeholders
+- `--batch FILE` - Process prompts from file (one per line)
+- `--output FILE` - Output file for batch mode results
+
+### Provider Configuration
+- `--provider NAME` - LLM provider (overrides config)
+- `--model NAME` - Model name (overrides config)
+- `--api-key KEY` - API key for provider (overrides environment)
+- `--timeout SECONDS` - Request timeout in seconds (overrides config)
+
+### Detection Options
+- `--disable-spacy` - Disable spaCy NER detection
+- `--disable-regex` - Disable regex pattern detection
+
+### Advanced Options
+- `--strict` - Fail on pre-send leak detection
+- `--export-mappings FILE` - Export entity mappings to file (security warning!)
+- `--verbose` - Enable verbose output
+- `--quiet` - Suppress non-essential output
+
+### Examples
+
+```bash
+# Interactive mode with verbose output
+python3 cli.py --config config.yaml --verbose
+
+# Test rehydration functionality
+python3 cli.py --config config.yaml --rehydrate "Hello PERSON_1, your email is EMAIL_1"
+
+# Batch processing
+python3 cli.py --config config.yaml --batch prompts.txt --output results.json
+
+# Use different model with custom timeout
+python3 cli.py --config config.yaml --model gpt-4 --timeout 60
+
+# Regex-only detection (disable spaCy)
+python3 cli.py --config config.yaml --disable-spacy
+
+# Export session mappings (use with caution!)
+python3 cli.py --config config.yaml --export-mappings session_mappings.json
 ```
+
+### Interactive Mode Commands
+
+When running in interactive mode (default), these commands are available:
+
+- `help` - Show available commands
+- `stats` - Show session statistics (prompts processed, entities detected, API usage)
+- `clear` - Clear session mappings (start fresh)
+- `quit` or `exit` - Exit the program
+- Any other text - Process through the pseudonymization pipeline
 
 ## Development
 
