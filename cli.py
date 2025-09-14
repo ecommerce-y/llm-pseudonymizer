@@ -184,6 +184,12 @@ Examples:
         help='Suppress non-essential output'
     )
     
+    parser.add_argument(
+        '--test',
+        action='store_true',
+        help='Show sanitized, LLM response, and final output'
+    )
+    
     return parser.parse_args()
 
 
@@ -582,7 +588,21 @@ def run_interactive_mode(args: argparse.Namespace, config, session: Session) -> 
             result = process_prompt(prompt, args, config, session)
             
             # Display results
-            if result.final_response:
+            if args.test and result.final_response:
+                # Test mode: show all stages
+                print("\n" + "="*50)
+                print("SENT TO LLM:")
+                print("="*50)
+                print(result.sanitized_text)
+                print("\n" + "="*50)
+                print("LLM RESPONSE:")
+                print("="*50)
+                print(result.llm_response)
+                print("\n" + "="*50)
+                print("FINAL OUTPUT:")
+                print("="*50)
+                print(result.final_response)
+            elif result.final_response:
                 print(f"\n{result.final_response}")
                 
                 if result.unknown_placeholders:
