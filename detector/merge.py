@@ -270,7 +270,7 @@ def validate_entity_format(entity: Dict[str, Any]) -> None:
         raise ValueError("Entity start must be less than end")
     
     # Validate entity type
-    valid_types = {'PERSON', 'ORG', 'EMAIL', 'URL'}
+    valid_types = {'PERSON', 'ORG', 'EMAIL', 'URL', 'PHONE'}
     if entity['type'] not in valid_types:
         raise ValueError(f"Invalid entity type: {entity['type']}. Must be one of {valid_types}")
     

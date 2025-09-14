@@ -35,7 +35,8 @@ class AliasManager:
             "PERSON": {},    # e.g., {"John Doe": "PERSON_1"}
             "ORG": {},       # e.g., {"Acme Corp": "ORG_1"}
             "EMAIL": {},     # e.g., {"john@example.com": "EMAIL_1"}
-            "URL": {}        # e.g., {"https://example.com": "URL_1"}
+            "URL": {},       # e.g., {"https://example.com": "URL_1"}
+            "PHONE": {}      # e.g., {"555-123-4567": "PHONE_1"}
         }
         
         # Counters track the next available number for each type
@@ -43,7 +44,8 @@ class AliasManager:
             "PERSON": 1,
             "ORG": 1,
             "EMAIL": 1,
-            "URL": 1
+            "URL": 1,
+            "PHONE": 1
         }
     
     def get_or_create_alias(self, entity_text: str, entity_type: str) -> str:
@@ -56,7 +58,7 @@ class AliasManager:
         
         Args:
             entity_text: The sensitive text to be replaced (e.g., "John Doe")
-            entity_type: One of "PERSON", "ORG", "EMAIL", "URL"
+            entity_type: One of "PERSON", "ORG", "EMAIL", "URL", "PHONE"
             
         Returns:
             Placeholder string (e.g., "PERSON_1")
@@ -128,7 +130,7 @@ class AliasManager:
         state of counter progression.
         
         Args:
-            entity_type: One of "PERSON", "ORG", "EMAIL", "URL"
+            entity_type: One of "PERSON", "ORG", "EMAIL", "URL", "PHONE"
             
         Returns:
             Next counter value that would be used for new entities
@@ -184,7 +186,7 @@ class AliasManager:
         
         Args:
             entity_text: The entity text to check
-            entity_type: One of "PERSON", "ORG", "EMAIL", "URL"
+            entity_type: One of "PERSON", "ORG", "EMAIL", "URL", "PHONE"
             
         Returns:
             True if the entity already has a placeholder, False otherwise
@@ -217,7 +219,7 @@ class AliasManager:
         
         Args:
             entity_text: The entity text to look up
-            entity_type: One of "PERSON", "ORG", "EMAIL", "URL"
+            entity_type: One of "PERSON", "ORG", "EMAIL", "URL", "PHONE"
             
         Returns:
             Existing placeholder string, or None if not found

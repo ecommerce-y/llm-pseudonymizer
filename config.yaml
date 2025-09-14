@@ -10,6 +10,7 @@ detection:
     ORG: true         # Organization names (requires spaCy)
     EMAIL: true       # Email addresses (regex-based)
     URL: true         # URLs and domains (regex-based)
+    PHONE: true       # Phone numbers (regex-based)
   
   # Detection methods to use
   methods:

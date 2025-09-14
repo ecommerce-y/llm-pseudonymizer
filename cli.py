@@ -505,11 +505,10 @@ def display_sanitized_report(sanitized_text: str, entities: List[Dict], alias_sn
 def display_help():
     """Display help information for interactive mode."""
     print("\nAvailable commands:")
-    print("  help    - Show this help message")
-    print("  stats   - Show session statistics")
-    print("  clear   - Clear session mappings")
-    print("  quit    - Exit the program")
-    print("  exit    - Exit the program")
+    print("  !help   - Show this help message")
+    print("  !stats  - Show session statistics")
+    print("  !clear  - Clear session mappings")
+    print("  !quit   - Exit the program")
     print("\nOr enter any text to process through the pipeline.")
 
 
@@ -559,8 +558,8 @@ def run_interactive_mode(args: argparse.Namespace, config, session: Session) -> 
     """
     if not args.quiet:
         print("LLM Pseudonymizer - Interactive Mode")
-        print("Type 'quit' or 'exit' to end session")
-        print("Type 'help' for available commands")
+        print("Type '!quit' to end session")
+        print("Type '!help' for available commands")
         print("-" * 50)
     
     while True:
@@ -569,15 +568,15 @@ def run_interactive_mode(args: argparse.Namespace, config, session: Session) -> 
             prompt = input("\n> ").strip()
             
             # Handle special commands
-            if prompt.lower() in ['quit', 'exit']:
+            if prompt.lower() == '!quit':
                 break
-            elif prompt.lower() == 'help':
+            elif prompt.lower() == '!help':
                 display_help()
                 continue
-            elif prompt.lower() == 'stats':
+            elif prompt.lower() == '!stats':
                 display_session_stats(session)
                 continue
-            elif prompt.lower() == 'clear':
+            elif prompt.lower() == '!clear':
                 session.alias_manager.reset_session()
                 print("Session cleared.")
                 continue
@@ -614,7 +613,7 @@ def run_interactive_mode(args: argparse.Namespace, config, session: Session) -> 
                 print(f"\nSanitized text: {result.sanitized_text}")
             
         except KeyboardInterrupt:
-            print("\nUse 'quit' or 'exit' to end session.")
+            print("\nUse '!quit' to end session.")
         except Exception as e:
             print(f"\nError: {e}")
             if args.verbose:

@@ -44,6 +44,11 @@ URL_PATTERN = re.compile(
     re.IGNORECASE | re.VERBOSE
 )
 
+# Phone number pattern - supports US/Canada formats
+PHONE_PATTERN = re.compile(
+    r'\b(?:\+?1[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}\b'
+)
+
 # Pattern to clean trailing punctuation from URLs
 TRAILING_PUNCT_PATTERN = re.compile(r'[.,;:!?…)\]}]+$')
 
@@ -181,6 +186,42 @@ def detect_urls(text: str) -> List[Dict[str, Any]]:
         return []
 
 
+def detect_phones(text: str) -> List[Dict[str, Any]]:
+    """
+    Detect phone numbers in text using regex pattern.
+    
+    Supports US/Canada phone formats:
+    - (555) 123-4567
+    - 555-123-4567
+    - 555.123.4567
+    - +1-555-123-4567
+    - 1 555 123 4567
+    
+    Args:
+        text: Input text to search
+        
+    Returns:
+        List of entity dictionaries with phone information
+    """
+    if not text:
+        return []
+    
+    try:
+        entities = []
+        for match in PHONE_PATTERN.finditer(text):
+            entities.append(create_entity(
+                match.group(),
+                match.start(),
+                match.end(),
+                "PHONE"
+            ))
+        return entities
+    except Exception as e:
+        # Log error but don't crash
+        print(f"Warning: Phone detection error: {e}")
+        return []
+
+
 def detect_patterns(text: str) -> List[Dict[str, Any]]:
     """
     Run all regex pattern detections on the input text.
@@ -204,6 +245,9 @@ def detect_patterns(text: str) -> List[Dict[str, Any]]:
     
     # Run URL detection
     entities.extend(detect_urls(text))
+    
+    # Run phone detection
+    entities.extend(detect_phones(text))
     
     # Sort by position for consistent output
     entities.sort(key=lambda e: (e['start'], e['end']))
@@ -241,6 +285,9 @@ def detect_patterns_with_config(text: str, config=None) -> List[Dict[str, Any]]:
     
     if config.is_entity_enabled("URL"):
         entities.extend(detect_urls(text))
+    
+    if config.is_entity_enabled("PHONE"):
+        entities.extend(detect_phones(text))
     
     # Sort by position for consistent output
     entities.sort(key=lambda e: (e['start'], e['end']))

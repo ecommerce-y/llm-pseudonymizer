@@ -35,8 +35,14 @@ URL_LEAK_PATTERN = re.compile(
     re.IGNORECASE
 )
 
+# Phone leak pattern - exclude placeholder patterns
+PHONE_LEAK_PATTERN = re.compile(
+    r'\b(?!(?:EMAIL|URL|PERSON|ORG|PHONE)_\d+\b)'  # Negative lookahead for placeholders
+    r'(?:\+?1[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}\b'
+)
+
 # Valid entity types
-VALID_ENTITY_TYPES = {"EMAIL", "URL", "PERSON", "ORG"}
+VALID_ENTITY_TYPES = {"EMAIL", "URL", "PERSON", "ORG", "PHONE"}
 
 
 def rewrite_text(text: str, detected_entities: List[Dict[str, Any]],
@@ -201,6 +207,10 @@ def leak_check(sanitized_text: str) -> List[str]:
     # Check for URL leaks
     url_matches = URL_LEAK_PATTERN.findall(sanitized_text)
     leaks.extend(url_matches)
+    
+    # Check for phone leaks
+    phone_matches = PHONE_LEAK_PATTERN.findall(sanitized_text)
+    leaks.extend(phone_matches)
     
     return leaks
 

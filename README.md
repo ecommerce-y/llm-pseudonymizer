@@ -3,8 +3,8 @@
 LLM Pseudonymizer protects sensitive information when using external LLMs by replacing private data with placeholders before sending text out, then restoring it locally after. No sensitive data leaves your machine.
 
 ## How It Works
-1. Detects sensitive entities (emails, URLs, names, orgs)  
-2. Replaces them with placeholders (`EMAIL_1`, `PERSON_2`, etc.)  
+1. Detects sensitive entities (emails, URLs, names, orgs, phone numbers)
+2. Replaces them with placeholders (`EMAIL_1`, `PERSON_2`, `PHONE_3`, etc.)
 3. Sends sanitized text to the LLM  
 4. Restores original values in the response  
 
@@ -48,10 +48,10 @@ python3 cli.py --config config.yaml --test
 
 Example:
 ```
-Input:   Hi, I'm John Doe (john.doe@company.com).  
-Sanitized → Hi, I'm PERSON_1 (EMAIL_1).  
-Response  → Hello PERSON_1! ...  
-Rehydrated → Hello John Doe! ...
+Input:   Hi, I'm John Doe (john.doe@company.com). Call me at 555-123-4567.
+Sanitized → Hi, I'm PERSON_1 (EMAIL_1). Call me at PHONE_1.
+Response  → Hello PERSON_1! I'll call you at PHONE_1...
+Rehydrated → Hello John Doe! I'll call you at 555-123-4567...
 ```
 
 ## Project Structure

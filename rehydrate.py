@@ -20,7 +20,7 @@ from typing import Dict, List, Tuple, Any, Optional
 
 # Compiled pattern for placeholder detection
 # Matches: PERSON_1, ORG_2, EMAIL_10, URL_999, etc.
-PLACEHOLDER_PATTERN = re.compile(r'\b(?:PERSON|ORG|EMAIL|URL)_[1-9]\d*\b')
+PLACEHOLDER_PATTERN = re.compile(r'\b(?:PERSON|ORG|EMAIL|URL|PHONE)_[1-9]\d*\b')
 
 
 def rehydrate_response(response_text: str, alias_snapshot: Dict[str, str]) -> Tuple[str, List[str]]:
